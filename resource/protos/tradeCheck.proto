@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.tradeCheck";
+option java_outer_classname = "tradeCheckProto";
+option objc_class_prefix = "tradeCheck";
+
+package tradeCheck;
+
+// 买卖点确定.
+service TradeCheckService {
+
+	// 返回当前买卖策略说明
+	rpc getInfo(TradeHandle) returns (TradeCheckInfo) {}
+
+	// 根据现有走势数组判断买卖点
+	rpc tradeCheck(TokenName) returns (TradeExpect) {}
+
+}
+
+message TradeHandle {
+	int32 handler = 1;
+}
+
+message TradeCheckInfo {
+	string info = 1;
+	
+}
+
+message TokenName {
+	string name = 1;
+}
+
+message TradeExpect {
+	string pairs = 1;
+	float limitBuy = 2;
+	float limitSeel = 3; 
+}
+
