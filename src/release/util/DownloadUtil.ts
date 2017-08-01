@@ -168,7 +168,7 @@ export class DownloadUtil{
 
                 request.on('error', function(err:Error) { // Handle errors
                     LogUtil.error(DownloadUtil.TAG, "Download error:" + err.message);
-                    fs.unlink(dest); // Delete the file async. (But we don't check the result)  
+                    fs.unlinkSync(dest); // Delete the file async. (But we don't check the result)  
                     reject(err);
                 });
 

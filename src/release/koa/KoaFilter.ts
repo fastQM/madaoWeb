@@ -1,4 +1,3 @@
-/// <reference path="../../../typings/main.d.ts" />
 let send = require("koa-send");
 import * as path from "path";
 import {LogUtil} from "../util/LogUtil";

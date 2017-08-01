@@ -76,7 +76,7 @@ export class DistributerRouter extends BaseRouter{
         let taskid = Random.getRand(16);
         let file = ctx.request.files.uploadfile;
         
-        fs.rename(file.path, path.join(Config.UPLOAD_FILE_PATH, file.name))
+        fs.renameSync(file.path, path.join(Config.UPLOAD_FILE_PATH, file.name))
         
         let szStocks = fs.readFileSync(path.join(__dirname, "../../resource/stocklist/00.txt"),"utf-8");
 		let cyStocks = fs.readFileSync(path.join(__dirname, "../../resource/stocklist/300.txt"),"utf-8");

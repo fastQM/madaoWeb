@@ -4,6 +4,7 @@ import {BaseTask} from "./BaseTask"
 import {BaseSocket} from "../socket/BaseSocket"
 import {TokensRedis} from "../redis/TokensRedis"
 import {TradeCheckGRPC} from "../grpc/tradeCheck"
+import {Config} from "../main/config"
 
 var momentUtil = require("moment")
 var poloniex = require("poloniex.js");
@@ -69,8 +70,7 @@ export class PoloniexTask extends BaseTask{
         private static errorCounter = 0;
         public static mTokenList:Array<TokenIndex> = []
         private static TAG = "PoloniexTask"
-        private polo = new poloniex("7VQ61KIM-HY18NXZ4-UXT3D35L-8T188SY5",
-                "d75743a7a95d6981909a17a0f7aad2101b608fc5a9ac7798b181c859efda5620d899ab70aff3f6b7b7b7a23ef7bb5c6cafb8e737e408156fe90715a7de1e1849");
+        private polo:any = null;
 
         private timer:any
         private isNetwork = false
@@ -112,21 +112,39 @@ export class PoloniexTask extends BaseTask{
                 }
         }
 
+        private initPoloniexConnection(){
+                this.polo = new poloniex(Config.POLONIEX_APK_KEY, Config.POLONIEX_SECRET);
+                this.isNetwork = false;
+        }
+
         public start(){
+
+                this.initPoloniexConnection();
 
                 // 获取数字货币列表以及最新价格
                 this.updateListAndPrice();
 
                 let index = 0;
                 let grpc = new TradeCheckGRPC();
+                let counter = 0;
 
                 // 获取最新历史周期数据
                 this.timer = setInterval(async() => {
                         
                         if(this.isNetwork){
                                 LogUtil.debug(PoloniexTask.TAG, "network is working")
+
+                                // for some unknown reason, the network will never return so here we make it work again. Not a good idea
+                                if(counter < 60){
+                                        counter++;
+                                }else{
+                                        counter = 0;
+                                        this.initPoloniexConnection();
+                                }
                                 return
                         }
+
+                        counter = 0;
 
                         let list = PoloniexTask.mTokenList;
 
@@ -151,15 +169,22 @@ export class PoloniexTask extends BaseTask{
 
                                 let date = null
                                 if(last[0][0] != null){
-                                        date = JSON.parse(last[0][0]).date + 1
+                                        date = JSON.parse(last[0][0]).date + 900
                                 }
 
                                 try{
+
+                                        let now = momentUtil().unix()
+                                        // LogUtil.debug(PoloniexTask.TAG, "Now:" + now)
+                                        if(now < date){
+                                                LogUtil.debug(PoloniexTask.TAG, "Wait for a while")
+                                                return
+                                        }
                                         let data = await this.getChartData(tokenA, tokenB, DurationType.MIN_15, date)
                                         LogUtil.debug(PoloniexTask.TAG, "Add Data:" + JSON.stringify(data))
 
                                         if(data[0].date == 0){
-                                                LogUtil.debug(PoloniexTask.TAG, "No new data...")
+                                                // LogUtil.debug(PoloniexTask.TAG, "No new data...")
                                                 tokensRedis.close()
                                                 return
                                         }
@@ -437,6 +462,7 @@ export class PoloniexTask extends BaseTask{
                 // LogUtil.info("", momentUtil().format())
                 // LogUtil.info("", momentUtil.unix("1495923600").format())
                 return new Promise((resolve, reject) => {
+                        // for some unknown reason, it will never return after running for a while
                         this.polo.returnChartData(tokenA, tokenB, duration, start, end, (err:any, data:Array<ChartValue>) => {
                                 
                                 this.isNetwork = false

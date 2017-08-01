@@ -1,7 +1,5 @@
 import {LogUtil} from "../util/LogUtil"
 import {BaseTask} from "../task/BaseTask"
-import {UpdateStockInfo} from "../task/UpdateStockInfo"
-import {CollectTencentNews} from "../task/CollectTencentNews"
 import {SyncIP} from "../task/SyncIP"
 import {DnsTask} from "../task/DnsTask"
 import {PoloniexTask} from "../task/PoloniexTask"
@@ -18,10 +16,6 @@ export class Tasks{
         
         setTimeout(()=>{
             
-            // let updateStockInfoTask = new UpdateStockInfo();
-            // Tasks.taskList.push(new UpdateStockInfo());
-            // Tasks.taskList.push(new CollectTencentNews());
-            // Tasks.taskList.push(new SyncIP())
             Tasks.taskList.push(new DnsTask())
             Tasks.taskList.push(new PoloniexTask())
             

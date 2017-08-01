@@ -9,7 +9,7 @@
 //         weightedAverage:number
 // }
 
-import {ChartValue} from "../main/poloniex"
+import {ChartValue} from "../task/PoloniexTask"
 import {LogUtil} from "./LogUtil"
 import {FileUtil} from "./FileUtil"
 

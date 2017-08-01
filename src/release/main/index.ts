@@ -1,4 +1,3 @@
-/// <reference path="../../../typings/main.d.ts" />
 var koa = require('koa');
 var koaBody = require('koa-better-body');
 
@@ -54,14 +53,14 @@ routers.forEach(element => {
 });
 
 
-var options = {
-  key: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/server.key')),
-  cert: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/btnas_com.crt')),
-  ca: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/AddTrustExternalCARoot.crt'))
-  // passphrase: "QnTIhMq13ktKZosYtNRZ7X9kI96QgUHEvyyHJ8hlrigzJLUqYq"
-};
+// var options = {
+//   key: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/server.key')),
+//   cert: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/btnas_com.crt')),
+//   ca: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/AddTrustExternalCARoot.crt'))
+//   // passphrase: "QnTIhMq13ktKZosYtNRZ7X9kI96QgUHEvyyHJ8hlrigzJLUqYq"
+// };
 
-https.createServer(options, app.callback()).listen(8443);
+// https.createServer(options, app.callback()).listen(8443);
 let httpHandle = http.createServer(app.callback()).listen(8305);
 BaseSocket.init(httpHandle);
 

@@ -1,4 +1,3 @@
-/// <reference path="../../../typings/main.d.ts" />
 import {LogUtil} from "../util/LogUtil";
 
 const dgram = require('dgram');

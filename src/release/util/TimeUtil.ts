@@ -1,3 +1,5 @@
+var momentUtil = require('moment-timezone');
+
 export class TimeUtil{
     
     static TAG = "TimeUtil";
