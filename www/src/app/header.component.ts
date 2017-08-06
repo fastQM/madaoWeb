@@ -73,12 +73,6 @@ import { Component } from '@angular/core';
                 </li>
                 </ul>				
             </div>
-            <div id="title-container" class="title-container">
-					<div id="site-title" class="site-title">
-                        <img width="150" height="150" src="../assets/images/lion.jpg">
-                    </div>					
-                        <p class="tagline">提供全天候服务的私人助理</p>				
-            </div>
         </header>
     </div>
 
