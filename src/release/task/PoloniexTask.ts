@@ -250,7 +250,7 @@ export class PoloniexTask extends BaseTask{
                                 //         return;
                                 // }
 
-                                BaseSocket.broadcastMessage("update", JSON.stringify(args))
+                                BaseSocket.broadcastMessage("update", args)
 
                                 // if(args[ValueIndex.baseVolume] < 200){
                                 //         LogUtil.info(name, "交易量太小，不做监控" + args[ValueIndex.baseVolume])

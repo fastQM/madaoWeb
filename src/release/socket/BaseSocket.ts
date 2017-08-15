@@ -14,7 +14,7 @@ export class BaseSocket{
         });
     }
 
-    public static broadcastMessage = function(topic:string, msg:string){
+    public static broadcastMessage = function(topic:string, msg:any){
         BaseSocket.io.emit(topic, msg)
     }
 
