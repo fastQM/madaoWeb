@@ -7,7 +7,7 @@ import { HttpService } from "./common.service"
   selector: 'btnas-app',
   template: `
     <btnas-header></btnas-header>
-    <token-list></token-list>
+    <router-outlet></router-outlet>
   `,
   providers: [HttpService]
 })

@@ -4,6 +4,7 @@ import { FormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { RouterModule } from '@angular/router';
 
+
 import { AppComponent }  from './app.component';
 import { HeaderComponent } from './header.component'
 import { BannerComponent } from './banner.component'
@@ -15,14 +16,12 @@ import { BlogComponent } from './blog.component'
 
 import { AppRoutingModule } from './app.routing.module'
 
-import {TokenListComponent} from "./tokenlist.component"
-
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    AppRoutingModule 
+    AppRoutingModule
   ],
   declarations: [
     AppComponent,
@@ -30,8 +29,7 @@ import {TokenListComponent} from "./tokenlist.component"
     BannerComponent,
     AboutComponent,
     SidebarComponent,
-    FooterComponent,
-    TokenListComponent
+    FooterComponent
   ],
   bootstrap: [ AppComponent ]
 })

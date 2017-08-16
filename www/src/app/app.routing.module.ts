@@ -1,21 +1,33 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule }   from '@angular/forms';
 
-import { BlogComponent } from './blog.component';
+import { PaginationModule } from 'ngx-bootstrap';
+import { Ng2TableModule } from 'ng2-table/ng2-table';
+
+import {TokenListComponent} from "./tokens.component"
 import { BlogListComponent } from './bloglist.component';
 
 @NgModule({
   imports: [
+    FormsModule,
     BrowserModule,
+    PaginationModule.forRoot(),
+    Ng2TableModule,
+    // when we refresh the browser, the routers will be lost
     RouterModule.forRoot([
-      { path: 'blog/:id', component: BlogComponent },
-      { path: '', component: BlogListComponent }
-    //   { path: '**', component: PageNotFoundComponent }
-    ])
+      { path: 'tokens', component: TokenListComponent },
+      { path: 'triggers', component: BlogListComponent },
+      { 
+        path: '',
+        redirectTo: '/tokens',
+        pathMatch: 'full'
+      },
+    ]),
   ],
   declarations: [
-    BlogComponent,
+    TokenListComponent,
     BlogListComponent
   ],
   exports: [

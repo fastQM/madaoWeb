@@ -11,10 +11,10 @@ import { Component } from '@angular/core';
             <div id="menu-primary" class="menu-container menu-primary" role="navigation">
             <nav class="menu"><ul id="menu-primary-items" class="menu-primary-items">
                 <li id="menu-item-111" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-111">
-                    <a href="https://www.competethemes.com/apex-live-demo/">首页</a>
+                    <a href="/">市场</a>
                 </li>
                 <li id="menu-item-113" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-113">
-                    <a href="https://www.competethemes.com/apex-live-demo/about/">关于我</a>
+                    <a routerLink="/triggers">触发列表</a>
                 </li>
                 <li id="menu-item-112" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-112">
                     <a href="https://www.competethemes.com/apex-live-demo/sample-page-2/">服务</a>
@@ -81,5 +81,6 @@ import { Component } from '@angular/core';
 export class HeaderComponent {
 //   @Input()
   title = "一切尽如您愿";
+  link = "http://192.168.0.108:8305"
 
 }
