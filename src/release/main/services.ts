@@ -18,7 +18,7 @@ export class Services {
     
     public static start = ():void =>{
         
-        // BaseMongoDB.start();
+        BaseMongoDB.start();
         
         // MqttClient.start();
         // let subscriber = {topic:"news", qos:2, callback: function(message:string){

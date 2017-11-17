@@ -12,6 +12,7 @@ export class Routers{
     
     public static getRouters = ():Array<BaseRouter> => {
         Routers.routers.push(new FunctionRouter());
+        Routers.routers.push(new UserRouter());
         
         return Routers.routers;   
     }

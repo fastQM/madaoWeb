@@ -16,7 +16,7 @@ export class Tasks{
         
         setTimeout(()=>{
             
-            Tasks.taskList.push(new DnsTask())
+            // Tasks.taskList.push(new DnsTask())
             Tasks.taskList.push(new PoloniexTask())
             
             Tasks.taskList.forEach(element => {

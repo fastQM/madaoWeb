@@ -9,6 +9,7 @@ import {BaseRouter, MethodHandler} from "./BaseRouter";
 import {TimeUtil} from "../util/TimeUtil";
 import {LoginRedis} from "../redis/LoginRedis";
 import * as UsersDB from "../mongodb/UsersDB";
+import * as fs from "fs";
 
 export class UserRouter extends BaseRouter{
     
@@ -17,10 +18,13 @@ export class UserRouter extends BaseRouter{
     private static tag = "UsersRouter";
     
     constructor(){
+        
         super(UserRouter.PATH_ROOT);
-        UserRouter.redis = new LoginRedis();
+        // UserRouter.redis = new LoginRedis();
+
         this.setGetRouter("/register", this.register);
-        this.setPostRouter("/login", this.login)
+        this.setPostRouter("/login", this.login);
+        this.setPostRouter("/upload", this.upload);
         
     }
     
@@ -49,9 +53,17 @@ export class UserRouter extends BaseRouter{
         }
         else{
             
-        }
-        
+        } 
     }
     
+
+    private upload = async (ctx:any, next:any) => {
+        const file = ctx.request.files[0];
+        const reader = fs.createReadStream(file.path);
+        const stream = fs.createWriteStream("./uploads/" + file.name);
+        reader.pipe(stream);
+        console.log('uploading %s -> %s', file.name, stream.path);
+        ctx.response.body = "success";
+    }
        
 }

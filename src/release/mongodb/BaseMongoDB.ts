@@ -24,8 +24,8 @@ export class BaseMongoDB<T>{
     }
     
     public static start(){
-        
-        mongoose.connect(BaseMongoDB.host);
+        mongoose.Promise = global.Promise;
+        mongoose.connect(BaseMongoDB.host, {useMongoClient: true});
 
         var db = mongoose.connection;
         db.on('error', (error:Error) => {
@@ -83,6 +83,19 @@ export class BaseMongoDB<T>{
                 }
             })
         });
+    }
+
+    protected insertMany = async (record:Array<T>):Promise<any> => {
+        return new Promise((resolve:any, reject:any) => {
+            this.model.insertMany(record, (error:Error, result:any) => {
+                if(error){
+                    reject(error);
+                    return;
+                }else{
+                    resolve(result);
+                }            
+            })
+        })
     }
     
     protected findOne = async (conditon:any, filter:string):Promise<any> => {

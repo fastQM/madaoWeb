@@ -21,59 +21,67 @@ import {BaseSocket} from "../socket/BaseSocket"
 
 let TAG = "INDEX.JS";
 
-process.on('uncaughtException', (err:Error) => {
-  LogUtil.info(TAG, `Caught exception: ${err}`);
-});
 
-// 初始化后台服务以及任务
-Services.start();
-Tasks.start();
+class Entry{
 
-let app = new koa();
+  public static start = () => {
+    process.on('uncaughtException', (err:Error) => {
+      LogUtil.info(TAG, `Caught exception: ${err}`);
+    });
 
-/**
- * Other middleware
- */
-// app.use(cors());
-// app.use(logger());
-app.use((new KoaFilter()).getMiddleware());
+    // 初始化后台服务以及任务
+    Services.start();
+    Tasks.start();
 
-app.use(koaBody({formidable:{uploadDir: __dirname}}));
+    let app = new koa();
 
-// Public directory
-app.use((new KoaStatic(path.join(__dirname, '/../../www/views'), null)).getMiddleware());
-app.use((new KoaStatic(path.join(__dirname, '/../../www'), null)).getMiddleware());
+    /**
+     * Other middleware
+     */
+    // app.use(cors());
+    // app.use(logger());
+    app.use((new KoaFilter()).getMiddleware());
 
-console.log(__dirname);
+    app.use(koaBody({formidable:{uploadDir: __dirname}}));
 
-// Routers
-let routers = Routers.getRouters();
-routers.forEach(element => {
-    app.use(element.getRoutes()).use(element.getAllowedMethods())
-});
+    // Public directory
+    app.use((new KoaStatic(path.join(__dirname, '/../../www/views'), null)).getMiddleware());
+    app.use((new KoaStatic(path.join(__dirname, '/../../www'), null)).getMiddleware());
+
+    console.log(__dirname);
+
+    // Routers
+    let routers = Routers.getRouters();
+    routers.forEach(element => {
+        app.use(element.getRoutes()).use(element.getAllowedMethods())
+    });
 
 
-// var options = {
-//   key: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/server.key')),
-//   cert: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/btnas_com.crt')),
-//   ca: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/AddTrustExternalCARoot.crt'))
-//   // passphrase: "QnTIhMq13ktKZosYtNRZ7X9kI96QgUHEvyyHJ8hlrigzJLUqYq"
-// };
+    // var options = {
+    //   key: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/server.key')),
+    //   cert: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/btnas_com.crt')),
+    //   ca: fs.readFileSync(path.join(__dirname, '/../../resource/koacert/AddTrustExternalCARoot.crt'))
+    //   // passphrase: "QnTIhMq13ktKZosYtNRZ7X9kI96QgUHEvyyHJ8hlrigzJLUqYq"
+    // };
 
-// https.createServer(options, app.callback()).listen(8443);
-let httpHandle = http.createServer(app.callback()).listen(8305);
-BaseSocket.init(httpHandle);
+    // https.createServer(options, app.callback()).listen(8443);
+    let httpHandle = http.createServer(app.callback()).listen(8305);
+    BaseSocket.init(httpHandle);
 
-// LogUtil.info(TAG, "Server Started... ");
+    // LogUtil.info(TAG, "Server Started... ");
 
-var interfaces = os.networkInterfaces();
-for(var item in interfaces){
-  var inf = interfaces[item];
-  if(inf != null){
-    for(var i=0;i<inf.length;i++){
-      if(inf[i].family == "IPv4"){
-        LogUtil.info(TAG, "IP:" + inf[i].address);
+    var interfaces = os.networkInterfaces();
+    for(var item in interfaces){
+      var inf = interfaces[item];
+      if(inf != null){
+        for(var i=0;i<inf.length;i++){
+          if(inf[i].family == "IPv4"){
+            LogUtil.info(TAG, "IP:" + inf[i].address);
+          }
+        }
       }
     }
   }
 }
+
+Entry.start();

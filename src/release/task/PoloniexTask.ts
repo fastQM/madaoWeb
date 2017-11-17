@@ -2,11 +2,13 @@ import {LogUtil} from "../util/LogUtil";
 import {HttpUtil} from "../util/HttpUtil"
 import {BaseTask} from "./BaseTask"
 import {BaseSocket} from "../socket/BaseSocket"
-import {TokensRedis} from "../redis/TokensRedis"
+// import {TokensRedis} from "../redis/TokensRedis"
 import {TradeCheckGRPC} from "../grpc/tradeCheck"
+import {TokenDB, INF_DB_TOKEN_CHART_CONFIG} from "../mongodb/TokenDB"
 import {Config} from "../main/config"
 
 var momentUtil = require("moment")
+var tzUtil = require('moment-timezone');
 var poloniex = require("poloniex.js");
 var autobahn = require('autobahn');
 var wsuri = "wss://api.poloniex.com";
@@ -70,7 +72,12 @@ export class PoloniexTask extends BaseTask{
         private static errorCounter = 0;
         public static mTokenList:Array<TokenIndex> = []
         private static TAG = "PoloniexTask"
+        private static EXCHANGE_NAME = "Poloniex"
         private polo:any = null;
+
+        public static mFormat = "YYYY-MM-DD HH:mm"
+        public static mtzLondon = "Europe/London"
+        public static mtzPoloniex = "America/Danmarkshavn"
 
         private timer:any
         private isNetwork = false
@@ -123,6 +130,7 @@ export class PoloniexTask extends BaseTask{
 
                 // 获取数字货币列表以及最新价格
                 this.updateListAndPrice();
+                // PoloniexTask.addToken("USDT", "ETH");
 
                 let index = 0;
                 let grpc = new TradeCheckGRPC();
@@ -159,17 +167,18 @@ export class PoloniexTask extends BaseTask{
                                         index = 0;
                                 }
                                 
-                                let tokensRedis = new TokensRedis();
+                                // let tokensRedis = new TokensRedis();
+                                let tokenDB = new TokenDB();
                                 let tokenName = tokenA + "-" + tokenB;
 
                                 LogUtil.debug(PoloniexTask.TAG, "Token:" + tokenName)
 
-                                let last = await tokensRedis.getLastData(TokensRedis.EXCAHNGE_POLONIEX, tokenName)
+                                let last = await tokenDB.findLast(tokenName)
                                 LogUtil.debug(PoloniexTask.TAG, "Last:" + JSON.stringify(last))
 
                                 let date = null
-                                if(last[0][0] != null){
-                                        date = JSON.parse(last[0][0]).date + 900
+                                if(last.err == null && last.data.length != 0){
+                                        date = last.data[0].date + 900
                                 }
 
                                 try{
@@ -177,24 +186,33 @@ export class PoloniexTask extends BaseTask{
                                         let now = momentUtil().unix()
                                         // LogUtil.debug(PoloniexTask.TAG, "Now:" + now)
                                         if(now < date){
-                                                LogUtil.debug(PoloniexTask.TAG, "Wait for a while")
+                                                // LogUtil.debug(PoloniexTask.TAG, "Wait for a while")
                                                 return
                                         }
                                         let data = await this.getChartData(tokenA, tokenB, DurationType.MIN_15, date)
                                         LogUtil.debug(PoloniexTask.TAG, "Add Data:" + JSON.stringify(data))
 
                                         if(data[0].date == 0){
-                                                // LogUtil.debug(PoloniexTask.TAG, "No new data...")
-                                                tokensRedis.close()
+                                                LogUtil.debug(PoloniexTask.TAG, "No new data...")
+                                                // tokensRedis.close()
                                                 return
                                         }
 
-                                        await tokensRedis.saveChartsData(TokensRedis.EXCAHNGE_POLONIEX, tokenName, data)
-                                        tokensRedis.close()
-                                        grpc.InvokeCheck(tokenName);
+                                        // await tokensRedis.saveChartsData(TokensRedis.EXCAHNGE_POLONIEX, tokenName, data)
+                                        let records:Array<INF_DB_TOKEN_CHART_CONFIG> = [];
+                                        for(let i=0;i<data.length;i++){
+                                                records[i] = data[i];
+                                                records[i].exchange = PoloniexTask.EXCHANGE_NAME;
+                                                records[i].name = tokenName;
+                                                records[i].hm = tzUtil.unix(data[i].date).tz(PoloniexTask.mtzPoloniex).format(PoloniexTask.mFormat)
+                                        }
+
+                                        await tokenDB.saveCharts(records)
+                                        // tokensRedis.close()
+                                        // grpc.InvokeCheck(tokenName);
 
                                 }catch(error){
-                                        tokensRedis.close()
+                                        // tokensRedis.close()
                                         LogUtil.error(PoloniexTask.TAG, "Exception:" + error)
                                 }
 
