@@ -1,4 +1,14 @@
-export class Config{
+interface GlobalValue{
+    app:any,
+    http:any
+}
+
+export class Global{
+
+    static SHARE:GlobalValue = {
+        app:null,
+        http:null,
+    };
     
     static THIS_IP = "52.43.45.42";
     

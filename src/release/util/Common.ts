@@ -1,10 +1,20 @@
 import {LogUtil} from "./LogUtil"
 
+import * as child_process from "child_process";
+import * as util from "util";
+
 const TAG = "COMMON";
 
 export interface PROMISE_RETURN{
     err:string,
     data?: any
+}
+
+export async function execute(command:string){
+    const exec = util.promisify(child_process.exec);
+    const { stdout, stderr } = await exec(command);
+    console.log('stdout:', stdout);
+    console.log('stderr:', stderr);
 }
 
 export function isContains(str:string, substr:string):boolean{

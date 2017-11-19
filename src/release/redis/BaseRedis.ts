@@ -1,5 +1,5 @@
 import {LogUtil} from "../util/LogUtil"
-import {Config} from "../main/config"
+import {Global} from "../main/global"
 
 var redis = require("redis");
 
@@ -11,8 +11,8 @@ export class BaseRedis{
     
     private static TAG = "BaseRedis";
     
-    public static host = Config.REDIS_IP;
-    public static port = Config.REDIS_PORT;
+    public static host = Global.REDIS_IP;
+    public static port = Global.REDIS_PORT;
 
     protected client:any;
     protected multi:any;

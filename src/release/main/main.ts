@@ -14,13 +14,11 @@ import {KoaFilter} from "../koa/KoaFilter";
 import {LogUtil} from "../util/LogUtil";
 import {InternetUtil} from "../util/InternetUtil";
 
+import {Global} from "./global"
 import {Routers} from "./routers"
-import {Services} from "./services"
 import {Tasks} from "./tasks"
-import {BaseSocket} from "../socket/BaseSocket"
 
-let TAG = "INDEX.JS";
-
+let TAG = "main";
 
 class Entry{
 
@@ -30,10 +28,10 @@ class Entry{
     });
 
     // 初始化后台服务以及任务
-    Services.start();
     Tasks.start();
 
     let app = new koa();
+    Global.SHARE.app = app;
 
     /**
      * Other middleware
@@ -47,8 +45,6 @@ class Entry{
     // Public directory
     app.use((new KoaStatic(path.join(__dirname, '/../../www/views'), null)).getMiddleware());
     app.use((new KoaStatic(path.join(__dirname, '/../../www'), null)).getMiddleware());
-
-    console.log(__dirname);
 
     // Routers
     let routers = Routers.getRouters();
@@ -66,9 +62,9 @@ class Entry{
 
     // https.createServer(options, app.callback()).listen(8443);
     let httpHandle = http.createServer(app.callback()).listen(8305);
-    BaseSocket.init(httpHandle);
+    Global.SHARE.http = httpHandle;
 
-    // LogUtil.info(TAG, "Server Started... ");
+    LogUtil.info(TAG, "Server Started... ");
 
     var interfaces = os.networkInterfaces();
     for(var item in interfaces){

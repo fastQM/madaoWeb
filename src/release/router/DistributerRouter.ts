@@ -9,7 +9,7 @@ import {BaseRouter, MethodHandler} from "./BaseRouter";
 import {TimeUtil} from "../util/TimeUtil"
 import {Random} from "../util/Random"
 import {LogUtil} from "../util/LogUtil"
-import {Config} from "../main/config"
+import {Global} from "../main/global"
 
 import * as path from "path"
 import * as fs from "fs"
@@ -76,7 +76,7 @@ export class DistributerRouter extends BaseRouter{
         let taskid = Random.getRand(16);
         let file = ctx.request.files.uploadfile;
         
-        fs.renameSync(file.path, path.join(Config.UPLOAD_FILE_PATH, file.name))
+        fs.renameSync(file.path, path.join(Global.UPLOAD_FILE_PATH, file.name))
         
         let szStocks = fs.readFileSync(path.join(__dirname, "../../resource/stocklist/00.txt"),"utf-8");
 		let cyStocks = fs.readFileSync(path.join(__dirname, "../../resource/stocklist/300.txt"),"utf-8");
@@ -88,7 +88,7 @@ export class DistributerRouter extends BaseRouter{
         DistributerRouter.task = {
             taskid: taskid,
             name: file.name,
-            path: Config.UPLOAD_FILE_PATH,
+            path: Global.UPLOAD_FILE_PATH,
             jobs: stockarrays
         }
         
@@ -113,7 +113,7 @@ export class DistributerRouter extends BaseRouter{
         let uploadfile = DistributerRouter.task.name;
         console.log("file:" + uploadfile);
         if(taskid != null && DistributerRouter.task != null){
-            let result = await send(ctx, uploadfile, {root: Config.UPLOAD_FILE_PATH})
+            let result = await send(ctx, uploadfile, {root: Global.UPLOAD_FILE_PATH})
             return;
         }else{
             

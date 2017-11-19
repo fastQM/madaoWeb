@@ -1,6 +1,5 @@
 import {BaseRouter} from "../router/BaseRouter";
 import {UserRouter} from "../router/UserRouter";
-import {AdvancedRouter} from "../router/AdvancedRouter";
 import {FunctionRouter} from "../router/FunctionRouter";
 import {AdminRouter} from "../router/AdminRouter"
 import {BlogRouter} from "../router/BlogRouter"

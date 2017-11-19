@@ -1,11 +1,13 @@
 import {LogUtil} from "../util/LogUtil";
 import {HttpUtil} from "../util/HttpUtil"
 import {BaseTask} from "./BaseTask"
-import {BaseSocket} from "../socket/BaseSocket"
 // import {TokensRedis} from "../redis/TokensRedis"
-import {TradeCheckGRPC} from "../grpc/tradeCheck"
+// import {TradeCheckGRPC} from "../grpc/tradeCheck"
 import {TokenDB, INF_DB_TOKEN_CHART_CONFIG} from "../mongodb/TokenDB"
-import {Config} from "../main/config"
+import {Global} from "../main/global"
+import {EventTask} from "./EventTask"
+import { SocketTask } from "./SocketTask";
+
 
 var momentUtil = require("moment")
 var tzUtil = require('moment-timezone');
@@ -86,7 +88,8 @@ export class PoloniexTask extends BaseTask{
                 PoloniexTask.errorCounter++;
                 if(PoloniexTask.errorCounter > 10){
                         LogUtil.error(PoloniexTask.TAG, "错误过多退出")
-                        process.exit();
+                        // process.exit();
+                        
                 }
         }
 
@@ -120,7 +123,7 @@ export class PoloniexTask extends BaseTask{
         }
 
         private initPoloniexConnection(){
-                this.polo = new poloniex(Config.POLONIEX_APK_KEY, Config.POLONIEX_SECRET);
+                this.polo = new poloniex(Global.POLONIEX_APK_KEY, Global.POLONIEX_SECRET);
                 this.isNetwork = false;
         }
 
@@ -133,8 +136,9 @@ export class PoloniexTask extends BaseTask{
                 // PoloniexTask.addToken("USDT", "ETH");
 
                 let index = 0;
-                let grpc = new TradeCheckGRPC();
+                // let grpc = new TradeCheckGRPC();
                 let counter = 0;
+                let grpc = new EventTask();
 
                 // 获取最新历史周期数据
                 this.timer = setInterval(async() => {
@@ -210,6 +214,9 @@ export class PoloniexTask extends BaseTask{
                                         await tokenDB.saveCharts(records)
                                         // tokensRedis.close()
                                         // grpc.InvokeCheck(tokenName);
+                                        grpc.emitGPRCAnalyze("happy world");
+
+
 
                                 }catch(error){
                                         // tokensRedis.close()
@@ -268,7 +275,7 @@ export class PoloniexTask extends BaseTask{
                                 //         return;
                                 // }
 
-                                BaseSocket.broadcastMessage("update", args)
+                                SocketTask.broadcastNewChart(args);
 
                                 // if(args[ValueIndex.baseVolume] < 200){
                                 //         LogUtil.info(name, "交易量太小，不做监控" + args[ValueIndex.baseVolume])

@@ -1,5 +1,5 @@
 import {LogUtil} from "../util/LogUtil";
-import {Config} from "../main/config"
+import {Global} from "../main/global"
 
 let mongoose = require("mongoose");
         
@@ -13,7 +13,7 @@ export interface INF_SCHEMA{
 export class BaseMongoDB<T>{
 
     private static TAG = "BaseMongoDB";
-    private static host = Config.MONGO_DB;
+    private static host = Global.MONGO_DB;
     // private static db = mongoose.connection;
     
     protected schema: any;

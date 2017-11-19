@@ -25,7 +25,7 @@ export class UserRouter extends BaseRouter{
         this.setGetRouter("/register", this.register);
         this.setPostRouter("/login", this.login);
         this.setPostRouter("/upload", this.upload);
-        
+        this.setGetRouter("/test", this.test);
     }
     
     private register = async (ctx:any, next:any) => {
@@ -64,6 +64,11 @@ export class UserRouter extends BaseRouter{
         reader.pipe(stream);
         console.log('uploading %s -> %s', file.name, stream.path);
         ctx.response.body = "success";
+    }
+
+    private test = async (ctx:any, next:any) => {
+        let res = {result:"good"};
+        ctx.response.body = res;
     }
        
 }
