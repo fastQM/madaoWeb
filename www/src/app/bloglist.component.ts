@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpService } from "./common.service";
 import { BlogStructs } from "./common.define";
+import { SocketIOService } from "./socketio.service";
 
 @Component({
   selector: 'btnas-blog-list',
@@ -54,9 +55,9 @@ export class BlogListComponent{
     errorMessage: string;
     blogs: BlogStructs[];
     mode = 'Observable';
-  
+    test:string;
 
-    constructor (private blogService: HttpService) {}
+    constructor (private blogService: HttpService, private socket: SocketIOService) {}
     
     ngOnInit() { 
         this.blogs = [new BlogStructs("金门大桥", "只有创造才能让激情永驻", "Published February 10, 2015", 
@@ -65,10 +66,16 @@ export class BlogListComponent{
                                 "乌溜溜的黑眼珠和你的笑脸怎么也难忘记你容颜的转变轻飘飘的旧时光就这么溜走转头回去看看时已匆匆数年", 10)];
                                     
         console.log("init");
-        this.blogService.get<BlogStructs[]>("http://127.0.0.1:8080/example")
+        this.blogService.get<string>("/user/test")
                         .subscribe(
-                                    blogs => this.blogs = this.blogs.concat(blogs),
-                                    error =>  this.errorMessage = <any>error);                                   
+                            test => {
+                                this.test = test;
+                                console.log("result:" + JSON.stringify(this.test));
+                            },
+                            error =>  {
+                                this.errorMessage = <any>error;
+                            }
+                        );                                   
     }
     
 

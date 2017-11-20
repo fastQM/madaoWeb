@@ -45,8 +45,3 @@ export class HttpService {
     return Observable.throw(errMsg);
   }  
 }
-
-
-export class socketio{
-  
-}

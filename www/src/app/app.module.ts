@@ -15,6 +15,7 @@ import { FooterComponent } from './footer.component'
 import { BlogComponent } from './blog.component'
 
 import { AppRoutingModule } from './app.routing.module'
+import { EditorComponent } from './editor.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { AppRoutingModule } from './app.routing.module'
     BannerComponent,
     AboutComponent,
     SidebarComponent,
-    FooterComponent
+    FooterComponent,
+    EditorComponent
   ],
   bootstrap: [ AppComponent ]
 })
