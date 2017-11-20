@@ -7,6 +7,7 @@ var less = require('gulp-less');
 //     autoprefix= new LessPluginAutoPrefix({ browsers: ["last 2 versions"] });
 
 var ts = require('gulp-typescript');
+var uglify = require('gulp-uglify');
 
 
 gulp.task('default', ['less', 'nodejs'], function() {
@@ -30,5 +31,6 @@ gulp.task('nodejs', function(){
             module: "commonjs"
             
         }))
+        // .pipe(uglify())
         .pipe(gulp.dest('./'));
 });
