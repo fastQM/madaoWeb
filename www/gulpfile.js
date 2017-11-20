@@ -24,14 +24,14 @@ gulp.task('ts', function(){
     // How to dest to different folders?
     return gulp.src(['./src/**/*.ts', '!/**/*.d.ts'])
         .pipe(ts({
-	    "target": "es6",
-	    "module": "commonjs",
-	    "moduleResolution": "node",
-	    "sourceMap": true,
-	    "emitDecoratorMetadata": true,
-	    "experimentalDecorators": true,
-	    "removeComments": false,
-	    "noImplicitAny": false   
+            "target": "es6",
+            "module": "commonjs",
+            "moduleResolution": "node",
+            "sourceMap": true,
+            "emitDecoratorMetadata": true,
+            "experimentalDecorators": true,
+            "removeComments": false,
+            "noImplicitAny": false   
         }))
         .pipe(gulp.dest('./'));
 });
